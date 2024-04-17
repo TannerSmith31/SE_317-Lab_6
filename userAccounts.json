@@ -1,0 +1,13 @@
+[
+  {
+    "accountNumber": 470569,
+    "username": "Tanner",
+    "password": "123",
+    "savingsBalance": 10,
+    "checkingBalance": 0,
+    "dailySavingsDeposit": 0,
+    "dailyCheckingDeposit": 0,
+    "dailyCheckingWithdrawl": 0,
+    "dailySavingsTransfer": 0
+  }
+]

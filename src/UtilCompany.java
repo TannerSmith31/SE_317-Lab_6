@@ -9,7 +9,8 @@ import java.io.IOException;
 
 public class UtilCompany {
     //instance variables
-    private String UTILITY_FILENAME = "utilityFile.json"; //TODO: maybe use a json file
+    private String FILENAME = "userAccounts.json";
+    private JsonFileUtil jsonFileUtil = new JsonFileUtil();
 
     public UtilCompany(){
         //constructor
@@ -18,6 +19,7 @@ public class UtilCompany {
     /*
      * Function to create a new user account for the utility company / bank.
      * Takes a username and a password for the new account and stores them in the utility file
+     * //TODO: make this also initialize bills when that functionality is added
      */
     public void createUserAccount(){
         boolean successful = false;
@@ -25,92 +27,69 @@ public class UtilCompany {
         Random random = new Random();
         UserInfo newUsrAccnt = new UserInfo(0, null, null); //UserInfo object to store the new user account info
 
-        //Read the file where account info is stored
-        JsonArray accntsJsonArr;
-        try(FileReader reader = new FileReader(UTILITY_FILENAME)){
-            accntsJsonArr = JsonParser.parseReader(reader).getAsJsonArray();
+        //get username from user
+        while(!successful){
+            System.out.print("Enter a username: ");
+            String username = usrIn.nextLine();
 
-            //get username from user
-            while(!successful){
-                System.out.print("Enter a username: ");
-                String username = usrIn.nextLine();
-
-                //check if username already exists
-                if(accountMemberExists(accntsJsonArr, "username", username)){
-                    System.out.println("Username already Taken"); //found an account with the same username so reask
-                }else{
-                    newUsrAccnt.setUsername(username); //set username into newUsrAccnt object
-                    successful = true; //username is valid so continue
-                }
+            //check if username already exists
+            if(jsonFileUtil.jsonContainsMemberVal(FILENAME, "username", username)){
+                System.out.println("Username already Taken"); //found an account with the same username so reask
+            }else{
+                newUsrAccnt.setUsername(username); //set username into newUsrAccnt object
+                successful = true; //username is valid so continue
             }
-
-            //create a password for this new account
-            successful = false; //reset success variable for second loop
-            while(!successful){
-                System.out.print("Enter a password: ");
-                String password = usrIn.nextLine();
-                newUsrAccnt.setPassword(password); //set password into newUsrAccnt object
-                successful = true;
-            }
-
-            //generate a random 6-digit account number
-            successful = false;
-            int accountNumber = -1;
-            while(!successful){
-                accountNumber = random.nextInt(999999); //generate a random 6 digit number for the new account
-
-                //make sure the account number doesn't already exist
-                if(!accountMemberExists(accntsJsonArr, "accountNumber", Integer.toString(accountNumber))){
-                    newUsrAccnt.setAccountNumber(accountNumber);
-                    successful = true; //if the account number doesn't exist exit the loop
-                }
-            }
-
-            //add the new user account info to the json array
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            accntsJsonArr.add(createUserInfoJsonObject(newUsrAccnt));
-            String accntsJsonString = gson.toJson(accntsJsonArr);
-
-            //put the updated account array into the utility file
-            try (FileWriter writer = new FileWriter(UTILITY_FILENAME)) {
-                writer.append(accntsJsonString);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            System.out.println("Successfully added user. Your account number is " + accountNumber);
-        }catch(IOException e){
-            e.printStackTrace();
         }
+
+        //create a password for this new account
+        successful = false; //reset success variable for second loop
+        while(!successful){
+            System.out.print("Enter a password: ");
+            String password = usrIn.nextLine();
+            newUsrAccnt.setPassword(password); //set password into newUsrAccnt object
+            successful = true;
+        }
+
+        //generate a random 6-digit account number
+        successful = false;
+        int accountNumber = -1;
+        while(!successful){
+            accountNumber = random.nextInt(899999) + 100000; //generate a random 6 digit number for the new account
+
+            //make sure the account number doesn't already exist
+            if(!jsonFileUtil.jsonContainsMemberVal(FILENAME, "accountNumber", Integer.toString(accountNumber))){
+                newUsrAccnt.setAccountNumber(accountNumber);
+                successful = true; //if the account number doesn't exist exit the loop
+            }
+        }
+
+        //add the new user account info to the json array
+        jsonFileUtil.addToJsonFile(FILENAME, newUsrAccnt.toJsonObject());
+        System.out.println("Successfully added user. Your account number is " + accountNumber);
     }
 
     /*
-     * Takes a username and password and checks the utility File to see if the data matches
-     * returns 0 if info matches, 1 if username exists but password doesn't match, 2 if username doesn't exist, -1 otherwise
+     * Takes a (username or accountNumber) and password and checks the utility File to see if the data matches
+     * identificationMemberType will be either "username" (if logging in with username) or "accountNumber" (if logging in with accountNumber) and identificationVal will be what the user enters for that field
+     * returns 0 if info matches, -1 if username exists but password doesn't match, -2 if username doesn't exist, -3 otherwise
      */
-    public int userLogin(String username, String password){ //TODO: make another login for if you use account number to login?
-        JsonArray accntsJsonArr;
+    public int userLogin(String identificationMemberName, String identificationVal, String password){
 
-        try(FileReader reader = new FileReader(UTILITY_FILENAME)) {
-            accntsJsonArr = JsonParser.parseReader(reader).getAsJsonArray();
-            JsonObject accountObj;
-            for (JsonElement element : accntsJsonArr) {
-                accountObj = element.getAsJsonObject();
-                String curAccountUsername = accountObj.get("username").getAsString(); //get the username from the account
-                if (curAccountUsername.equals(username)){           //if the username matches what you are looking for, check password
-                    String curAccountPassword = accountObj.get("password").getAsString(); //get the password from the json object
-                    if (curAccountPassword.equals(password)){
-                        return 0;   //found username AND the password matched
-                    }else{
-                        return 1;   //found username but the password didn't match
-                    }
-                }
-            }
-            return 2; //couldn't find the username
-        }catch(IOException e){
-            e.printStackTrace();
+        //see if the users identificationVal exists as a value under the identificationMember of one of the accounts in the array
+        if(!jsonFileUtil.jsonContainsMemberVal(FILENAME, identificationMemberName, identificationVal)){
+            return -2; //the username/accountNumber isn't in the file
         }
-        return -1;
+
+        //get the password that is stored in the file with the account the user entered
+        String passwordFromFile = jsonFileUtil.getJsonMember(FILENAME, identificationMemberName, identificationVal, "password");
+
+        //if the password the user entered didn't match what is on file, return 1
+        if(!passwordFromFile.equals(password)){
+            return -1;
+        }
+
+        //account exists and password matches so return 0
+        return 0;
     }
 
     /*
