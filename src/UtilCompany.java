@@ -89,23 +89,31 @@ public class UtilCompany {
 
     /*
      * Takes a username and password and checks the utility File to see if the data matches
-     * returns 0 if info matches, 1 if username exists but password doesn't match, 2 if username doesn't exist, 3 otherwise
+     * returns 0 if info matches, 1 if username exists but password doesn't match, 2 if username doesn't exist, -1 otherwise
      */
-    public void userLogin(String username, String password){
+    public int userLogin(String username, String password){ //TODO: make another login for if you use account number to login?
         JsonArray accntsJsonArr;
 
         try(FileReader reader = new FileReader(UTILITY_FILENAME)) {
             accntsJsonArr = JsonParser.parseReader(reader).getAsJsonArray();
+            JsonObject accountObj;
+            for (JsonElement element : accntsJsonArr) {
+                accountObj = element.getAsJsonObject();
+                String curAccountUsername = accountObj.get("username").getAsString(); //get the username from the account
+                if (curAccountUsername.equals(username)){           //if the username matches what you are looking for, check password
+                    String curAccountPassword = accountObj.get("password").getAsString(); //get the password from the json object
+                    if (curAccountPassword.equals(password)){
+                        return 0;   //found username AND the password matched
+                    }else{
+                        return 1;   //found username but the password didn't match
+                    }
+                }
+            }
+            return 2; //couldn't find the username
         }catch(IOException e){
             e.printStackTrace();
         }
-        //TODO: implement function
-        //open utility file
-        //see if the username exists
-        //if not return 3
-        //else see if the password matches the username
-        //if not return 2
-        //otherwise if password matches username return 0 (success)
+        return -1;
     }
 
     /*
