@@ -7,8 +7,10 @@ public class AccountInfo {
     int accountNumber;
     int balance;
 
-    public AccountInfo(){
-        //constructor
+    //AccountInfo constructor
+    public AccountInfo(int accountNumber, int balance){
+        this.accountNumber = accountNumber;
+        this.balance = balance;
     }
 
     public int getAccountNumber() {

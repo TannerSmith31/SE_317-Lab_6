@@ -49,8 +49,6 @@ public class UtilCompany {
             while(!successful){
                 System.out.print("Enter a password: ");
                 String password = usrIn.nextLine();
-
-                //TODO: check any restrictions for password (if any. if not, delete this todo)
                 newUsrAccnt.setPassword(password); //set password into newUsrAccnt object
                 successful = true;
             }
@@ -70,7 +68,6 @@ public class UtilCompany {
 
             //add the new user account info to the json array
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//            String accntJsonString = gson.toJson(newUsrAccnt);
             accntsJsonArr.add(createUserInfoJsonObject(newUsrAccnt));
             String accntsJsonString = gson.toJson(accntsJsonArr);
 
