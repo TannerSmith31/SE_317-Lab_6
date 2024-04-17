@@ -1,3 +1,4 @@
+import com.google.gson.*;
 public class Bank {
     //instance variables
     private String savingsFilename = "savings.json";  //text file to store savings account information for users //TODO: maybe use JSON file
@@ -65,8 +66,5 @@ public class Bank {
         //Check for other error conditions
         //if all is good, add the given amount to the balance and save it to the file
     }
-
-
-
 
 }
