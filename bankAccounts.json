@@ -1,21 +1,21 @@
 [
   {
     "accountNumber": 131547,
-    "savingsBalance": 500,
-    "checkingBalance": 4000,
+    "savingsBalance": 400,
+    "checkingBalance": 4600,
     "dailySavingsDeposit": 500,
-    "dailyCheckingDeposit": 4500,
-    "dailySavingsTransfer": 0,
+    "dailyCheckingDeposit": 5000,
+    "dailySavingsTransfer": 100,
     "dailyCheckingWithdrawl": 500
   },
   {
     "accountNumber": 132772,
-    "savingsBalance": 70,
-    "checkingBalance": 2950,
+    "savingsBalance": 60,
+    "checkingBalance": 2759,
     "dailySavingsDeposit": 60,
     "dailyCheckingDeposit": 3000,
-    "dailySavingsTransfer": 0,
-    "dailyCheckingWithdrawl": 50
+    "dailySavingsTransfer": 10,
+    "dailyCheckingWithdrawl": 251
   },
   {
     "accountNumber": 934493,

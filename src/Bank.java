@@ -293,5 +293,10 @@ public class Bank {
     public int getSAVINGSID(){
         return SAVINGSID;
     }
-
+    public int getDAILY_S_TRANSFER_LIMIT(){
+        return DAILY_S_TRANSFER_LIMIT;
+    }
+    public int getDAILY_C_WITHDRAWL_LIMIT(){
+        return DAILY_C_WITHDRAWL_LIMIT;
+    }
 }

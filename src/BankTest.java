@@ -175,22 +175,79 @@ class BankTest {
                 initialBalance,
                 bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
     }
+    @Test
+    public void testTransactionFromSavingsToCheckingSuccess() {
+        bank = new Bank();
+        // Perform a transfer from savings to checking that should succeed
+        int transferAmount = 10; // An amount within the daily limit
+        int initialCheckingBalance = bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID());
+        int initialSavingsBalance = bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getSAVINGSID());
+        int result = bank.transaction(ACCOUNT_WITH_FUNDS, bank.getSAVINGSID(), transferAmount);
+
+        // Verify that the transaction was successful
+        assertEquals("Transaction should succeed", 0, result);
+        // Verify that the checking balance has increased by the transfer amount
+        assertEquals("Checking balance should be increased",
+                initialCheckingBalance + transferAmount,
+                bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID()));
+        // Verify that the savings balance has decreased by the transfer amount
+        assertEquals("Savings balance should be decreased",
+                initialSavingsBalance - transferAmount,
+                bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getSAVINGSID()));
+    }
 
     @Test
-    public void testDailyLimitEnforcement() {
+    public void testTransactionFromSavingsToCheckingDailyLimitExceeded() {
         bank = new Bank();
-        // Assuming a daily withdrawal limit, test that it is enforced over multiple transactions
-        int dailyLimit = 500; // Example daily limit
-        bank.deposit(bank.getFILENAME(), VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), dailyLimit); // Ensure the balance is sufficient
-        bank.withdrawl(bank.getFILENAME(), VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), dailyLimit - 100);
-        bank.withdrawl(bank.getFILENAME(), VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), 100); // Should be successful, at the limit
-        // Next withdrawal attempt that exceeds the limit
-        bank.withdrawl(bank.getFILENAME(), VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), 1); // Should fail, as limit is reached
+        // Attempt to transfer an amount that exceeds the daily transfer limit
+        int transferAmount = bank.getDAILY_S_TRANSFER_LIMIT() + 1; // Exceeding the limit
+        int result = bank.transaction(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), transferAmount);
 
-        // Check if the balance is as expected after the daily limit has been reached
-        assertEquals("Balance should reflect daily limit enforcement",
-                dailyLimit, // Since we deposited and withdrew the daily limit
-                bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
+        // Verify that the transaction failed due to daily limit
+        assertEquals("Transaction should fail due to daily limit", -1, result);
     }
+
+    @Test
+    public void testTransactionFromSavingsToCheckingWithInsufficientFunds() {
+        bank = new Bank();
+        // Attempt to transfer more than the available savings balance
+        int transferAmount = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID()) + 1; // More than available balance
+        int result = bank.transaction(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), transferAmount);
+
+        // Verify that the transaction failed due to insufficient funds
+        assertEquals("Transaction should fail due to insufficient funds", -1, result);
+    }
+
+    @Test
+    public void testTransactionWithInvalidAccount() {
+        bank = new Bank();
+        // Attempt to perform a transaction with an invalid account number
+        int transferAmount = 100; // Any amount for the purpose of this test
+        int result = bank.transaction(INVALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), transferAmount);
+
+        // Verify that the transaction failed due to invalid account number
+        assertEquals("Transaction should fail due to invalid account", -1, result);
+    }
+//    @Test
+//    public void testResetDailyValues() {
+//        private int NEW_ACCOUNT_NUMBER = 89898989;
+//        bank = new Bank();
+//        // Initially, we assume that the test account does not exist
+//        bank.openAccount(NEW_ACCOUNT_NUMBER);
+//        bank.deposit(bank.getFILENAME(), NEW_ACCOUNT_NUMBER, bank.getCHECKINGID(), 1000); // Deposit to update daily values
+//
+//        // Verify that daily values are updated by the deposit
+//        assertTrue("Daily checking deposit should be updated", bank.getDailyCheckingDeposit(NEW_ACCOUNT_NUMBER) > 0);
+//
+//        // Reset daily values
+//        int resetResult = bank.resetDailyValues(bank.getFILENAME());
+//        assertEquals("Reset daily values should succeed", 0, resetResult);
+//
+//        // Check that all daily values are reset to 0
+//        assertEquals("Daily checking deposit should be reset", 0, bank.getDailyCheckingDeposit(NEW_ACCOUNT_NUMBER));
+//        assertEquals("Daily savings deposit should be reset", 0, bank.getDailySavingsDeposit(NEW_ACCOUNT_NUMBER));
+//        assertEquals("Daily checking withdrawal should be reset", 0, bank.getDailyCheckingWithdrawal(NEW_ACCOUNT_NUMBER));
+//        assertEquals("Daily savings transfer should be reset", 0, bank.getDailySavingsTransfer(NEW_ACCOUNT_NUMBER));
+//    }
 
 }
