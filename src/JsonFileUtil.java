@@ -1,8 +1,10 @@
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class JsonFileUtil {
 
@@ -179,5 +181,44 @@ public class JsonFileUtil {
             e.printStackTrace();
         }
         return 0; //succsessful
+    }
+
+    public boolean deleteAccountFromJsonFile(String filename, int accountNumber) {
+        // Read the existing accounts from the file
+        List<Map<String, Object>> accounts = readAccountsFromFile(filename);
+
+        // Check if the account exists
+        boolean accountExists = accounts.stream()
+                .anyMatch(account -> accountNumber == ((Double) account.get("accountNumber")).intValue());
+
+        if (!accountExists) {
+            System.out.println("Account not found for account number: " + accountNumber);
+            return false;
+        }
+
+        // Remove the account with the given accountNumber
+        accounts.removeIf(account -> accountNumber == ((Double) account.get("accountNumber")).intValue());
+
+        // Write the updated accounts back to the file
+        return writeAccountsToFile(filename, accounts);
+    }
+
+    private List<Map<String, Object>> readAccountsFromFile(String filename) {
+        try (Reader reader = new FileReader(filename)) {
+            return new Gson().fromJson(reader, new TypeToken<List<Map<String, Object>>>(){}.getType());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    private boolean writeAccountsToFile(String filename, List<Map<String, Object>> accounts) {
+        try (Writer writer = new FileWriter(filename)) {
+            new Gson().toJson(accounts, writer);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
