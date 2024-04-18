@@ -1,7 +1,9 @@
 [
   {
-    "accountNumber": 932249,
-    "username": "tanner",
-    "password": "123"
+    "accountNumber": 934493,
+    "username": "Tanner",
+    "password": "1234",
+    "billHistory": "100,3,2.100,5,4.100,7,5",
+    "nextBill": "100,10,10"
   }
 ]

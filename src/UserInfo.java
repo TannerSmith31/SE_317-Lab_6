@@ -13,9 +13,9 @@ public class UserInfo {
     private String username;
     private String password;
 
-    //Bill variables. bills are set up as strings in the following way: "<billID>,<billAmnt>,<dueDate>,<datePaid>"
+    //Bill variables. paid bills are set up as strings in the following way: "<billID>,<billAmnt>,<dueDate>,<datePaid>". unpaid bills are set up as:"<billID>,<billAmnt>,<dueDate>,<amntPaid>".
     private String nextBill;
-    private String[] billHistory = new String[3];
+    private String billHistory;  //this array is structured as "<bill1>.<bill2>.<bill3>" where bills are seperated by dots
 
 
     public UserInfo(){
@@ -28,11 +28,8 @@ public class UserInfo {
         this.password = password;
 
         //generate random bill data
-        this.billHistory[0] = "100,3,2";
-        this.billHistory[1] = "100,5,4";
-        this.billHistory[2] = "100,7,5";
-
-        this.nextBill = "100,10,-1";
+        this.billHistory = "100,3,2.100,5,4.100,7,5";
+        this.nextBill = "100,10,0";
     }
 
     public int getAccountNumber() {
@@ -67,11 +64,11 @@ public class UserInfo {
         this.nextBill = nextBill;
     }
 
-    public String[] getBillHistory() {
+    public String getBillHistory() {
         return billHistory;
     }
 
-    public void setBillHistory(String[] billHistory) {
+    public void setBillHistory(String billHistory) {
         this.billHistory = billHistory;
     }
 
@@ -81,7 +78,8 @@ public class UserInfo {
         jsonObject.addProperty("accountNumber", accountNumber);
         jsonObject.addProperty("username", username);
         jsonObject.addProperty("password", password);
-        //TODO: add bill stuff
+        jsonObject.addProperty("billHistory", billHistory);
+        jsonObject.addProperty("nextBill", nextBill);
         return jsonObject;
     }
 }

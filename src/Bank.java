@@ -218,6 +218,47 @@ public class Bank {
 
         return 0;
     }
+
+    /*
+     * resets all values daily values to 0 for the dawn of a new day
+     * returns 0 if succesful and -1 if unsuccessful
+     */
+    public int resetDailyValues(String filename){
+        //parse through the accounts json file to find the correct account
+        JsonArray accntsJsonArr;
+        try{
+            FileReader reader = new FileReader(filename);
+            accntsJsonArr = JsonParser.parseReader(reader).getAsJsonArray();
+
+            //Check to find the correct account
+            JsonObject accountObj;
+            for (JsonElement element : accntsJsonArr) {
+                accountObj = element.getAsJsonObject();
+
+                //update the daily values
+                accountObj.addProperty("dailyCheckingDeposit", 0);
+                accountObj.addProperty("dailySavingsDeposit", 0);
+                accountObj.addProperty("dailyCheckingWithdrawl", 0);
+                accountObj.addProperty("dailySavingsTransfer", 0);
+            }
+
+            //remake the list of accounts to put back in the given file
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String accntsJsonString = gson.toJson(accntsJsonArr);
+
+            //put the updated account array into the given file (savings or checking)
+            try (FileWriter writer = new FileWriter(filename)) {
+                writer.append(accntsJsonString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }catch(Exception e){
+            System.out.println("Error in Bank -> resetDailyValues()");
+            return -1;
+        }
+        return 0; //successful
+    }
+
     /**
      * Deletes a bank account with the given account number.
      *
