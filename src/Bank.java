@@ -124,7 +124,7 @@ public class Bank {
             dailyDepositLimit = DAILY_C_DEPOSIT_LIMIT;
             accountBalanceName = "checkingBalance";
         }else{
-            System.out.println("Invalid accountType in Bank -> withdrawl()");
+            System.out.println("Invalid accountType in Bank -> deposit()");
             return -1;
         }
 
@@ -150,8 +150,56 @@ public class Bank {
      *  cant make any account go negative
      * returns 0 if successful and -1 otherwise
      */
-    public void transaction(int accountNumber){
+    public int transaction(int accountNumber, int fromAccountType, int amount){
         //TODO: implement function
+        int oldToBalance;
+        int newToBalance;
+        int oldFromBalance;
+        int newFromBalance;
+        String toBalanceName;      //name of the account the deposit is being done on (savings or checking)
+        String fromBalanceName;
+        int newDailySavingsTransfer = 0;
+
+
+        if(fromAccountType == SAVINGSID){
+            toBalanceName = "checkingBalance";
+            fromBalanceName = "savingsBalance";
+
+            //Savings account is the only one with daily transfer limits so just check that here
+            newDailySavingsTransfer = Integer.parseInt(jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), "dailySavingsTransfer")) + amount;
+            if (newDailySavingsTransfer > DAILY_S_TRANSFER_LIMIT){
+                System.out.println("Transfer Unsucessful: transaction exceeds daily transaction limit");
+                return -1;
+            }
+        }else if(fromAccountType == CHECKINGID){
+            toBalanceName = "savingsBalance";
+            fromBalanceName = "checkingBalance";
+        }else{
+            System.out.println("Invalid accountType in Bank -> transfer()");
+            return -1;
+        }
+
+        //calculate new balances for the 2 accounts
+        oldFromBalance = Integer.parseInt(jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), fromBalanceName));
+        newFromBalance = oldFromBalance - amount;
+        oldToBalance = Integer.parseInt(jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), toBalanceName));
+        newToBalance = oldToBalance + amount;
+
+        //check to see if the from account has enough money to support the transaction
+        if(newFromBalance < 0){
+            System.out.println("Transfer Unsuccessful: not enough funds");
+            return -1;
+        }
+
+        //carry out deposit (update balance and daily deposit)
+        if(fromAccountType == SAVINGSID){ //only update the dailySavingsTransaction variable if you are taking money from savings and going to checking
+            jsonFileUtil.setJsonMemberInt(FILENAME, "accountNumber", Integer.toString(accountNumber), "dailySavingsTransfer", newDailySavingsTransfer);
+        }
+        jsonFileUtil.setJsonMemberInt(FILENAME, "accountNumber", Integer.toString(accountNumber), toBalanceName, newToBalance);
+        jsonFileUtil.setJsonMemberInt(FILENAME, "accountNumber", Integer.toString(accountNumber), fromBalanceName, newFromBalance);
+        System.out.println("Deposit successful");
+
+        return 0;
 
     }
 
