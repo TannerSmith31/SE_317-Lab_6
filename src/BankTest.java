@@ -182,7 +182,7 @@ class BankTest {
     public void testTransactionWithInsufficientFunds() {
         bank = new Bank();
         // Test withdrawal that exceeds the current balance
-        int withdrawalAmount = 500; // Set this to more than the current balance
+        int withdrawalAmount = 9000; // Set this to more than the current balance
         int initialBalance = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID());
 
         bank.withdraw(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), withdrawalAmount);
