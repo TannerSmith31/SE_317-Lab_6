@@ -7,7 +7,7 @@ public class BankAccount {
     private int dailySavingsDeposit;
     private int dailyCheckingDeposit;
     private int dailySavingsTransfer;
-    private int dailyCheckingWithdrawl;
+    private int dailyCheckingWithdraw;
 
     public BankAccount(int accountNumber){
         this.accountNumber = accountNumber;
@@ -15,7 +15,7 @@ public class BankAccount {
         this.checkingBalance = 0;
         this.dailyCheckingDeposit = 0;
         this.dailySavingsDeposit = 0;
-        this.dailyCheckingWithdrawl = 0;
+        this.dailyCheckingWithdraw = 0;
         this.dailySavingsTransfer = 0;
     }
 
@@ -59,12 +59,12 @@ public class BankAccount {
         this.dailyCheckingDeposit = dailyCheckingDeposit;
     }
 
-    public int getDailyCheckingWithdrawl() {
-        return dailyCheckingWithdrawl;
+    public int getDailyCheckingWithdraw() {
+        return dailyCheckingWithdraw;
     }
 
-    public void setDailyCheckingWithdrawl(int dailyCheckingWithdrawl) {
-        this.dailyCheckingWithdrawl = dailyCheckingWithdrawl;
+    public void setDailyCheckingWithdraw(int dailyCheckingWithdraw) {
+        this.dailyCheckingWithdraw = dailyCheckingWithdraw;
     }
 
     public int getDailySavingsTransfer() {
@@ -82,7 +82,7 @@ public class BankAccount {
         jsonObject.addProperty("checkingBalance", checkingBalance);
         jsonObject.addProperty("dailySavingsDeposit", dailySavingsDeposit);
         jsonObject.addProperty("dailyCheckingDeposit", dailyCheckingDeposit);
-        jsonObject.addProperty("dailyCheckingWithdrawl", dailyCheckingWithdrawl);
+        jsonObject.addProperty("dailyCheckingWithdraw", dailyCheckingWithdraw);
         jsonObject.addProperty("dailySavingsTransfer", dailySavingsTransfer);
         return jsonObject;
     }

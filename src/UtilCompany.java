@@ -119,13 +119,13 @@ public class UtilCompany {
      * function to check a users next bill payment.
      * The nextBillPayment variable is set up as "<amntDue>,<DueDate>,<AmntPaid>"
      */
-    public void checkNextBillPayment(int accountNumber){
-        String nextBillPaymentRaw = jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), "nextBill");
-        String[] nextBillPaymentArr = nextBillPaymentRaw.split(",");
-        System.out.println("Next Payment due:");
-        System.out.println(">Amount Due: " + nextBillPaymentArr[0]);
-        System.out.println(">Due Date: " + nextBillPaymentArr[1]);
-        System.out.println(">Amount Paid: " + nextBillPaymentArr[2]);
+    public void checkNextBill(int accountNumber){
+        String nextBillRaw = jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), "nextBill");
+        String[] nextBillArr = nextBillRaw.split(",");
+        System.out.println("Next Bill due:");
+        System.out.println(">Amount Due: " + nextBillArr[0]);
+        System.out.println(">Due Date: " + nextBillArr[1]);
+        System.out.println(">Amount Paid: " + nextBillArr[2]);
     }
 
     /*
@@ -157,14 +157,14 @@ public class UtilCompany {
         }
 
         //you have enough money to pay the bill
-        if(bank.withdrawl(bank.getFILENAME(), accountNumber, bank.getCHECKINGID(), amount) == 0){
+        if(bank.withdraw(accountNumber, bank.getCHECKINGID(), amount) == 0){
             int newAmountPaid = amountPaid + amount;
             String newBillPaymentUpdated = nextBillPaymentArr[0] + "," + nextBillPaymentArr[1] + "," + newAmountPaid;
             jsonFileUtil.setJsonMemberString(FILENAME, "accountNumber", Integer.toString(accountNumber), "nextBill", newBillPaymentUpdated);
             System.out.println("Successfully made bill payment");
             return 0;
         }else {
-            //you already met your max withdrawl for the day. Withdrawl function already notifies user of this
+            //you already met your max withdraw for the day. Withdraw function already notifies user of this
             return -1;
         }
     }

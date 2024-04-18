@@ -5,7 +5,7 @@
     "checkingBalance": 490,
     "dailySavingsDeposit": 0,
     "dailyCheckingDeposit": 500,
-    "dailyCheckingWithdrawl": 10,
+    "dailyCheckingWithdraw": 10,
     "dailySavingsTransfer": 0
   }
 ]
