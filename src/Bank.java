@@ -47,6 +47,7 @@ public class Bank {
     public int getBalance(int accountNumber, int accountType){
         //see if the account exists
         if(!jsonFileUtil.jsonContainsMemberVal(FILENAME, "accountNumber", Integer.toString(accountNumber))){
+            System.out.println("Balance check failed: account doesn't exist");
             return -1; //account wasn't found
         }
         if(accountType == SAVINGSID){
@@ -69,6 +70,12 @@ public class Bank {
     public int withdrawl(String filename, int accountNumber, int accountType, int amount) {
         int oldBalance;
         int newBalance;
+
+        //see if the account exists
+        if(!jsonFileUtil.jsonContainsMemberVal(FILENAME, "accountNumber", Integer.toString(accountNumber))){
+            System.out.println("Withdraw unsuccessful: account doesn't exist");
+            return -1; //account wasn't found
+        }
 
         if(accountType == SAVINGSID){
             System.out.println("Withdrawl unsuccessful: Not allowed to withdraw from savings");
@@ -115,6 +122,12 @@ public class Bank {
         int dailyDepositLimit;          //The limit for the correct account (savings or checking)
         String accountBalanceName;      //name of the account the deposit is being done on (savings or checking)
 
+        //see if the account exists
+        if(!jsonFileUtil.jsonContainsMemberVal(FILENAME, "accountNumber", Integer.toString(accountNumber))){
+            System.out.println("Deposit unsuccessful: account doesn't exist");
+            return -1; //account wasn't found
+        }
+
         if(accountType == SAVINGSID){
             dailyDepositName = "dailySavingsDeposit";
             dailyDepositLimit = DAILY_S_DEPOSIT_LIMIT;
@@ -159,6 +172,11 @@ public class Bank {
         String fromBalanceName;
         int newDailySavingsTransfer = 0;
 
+        //see if the account exists
+        if(!jsonFileUtil.jsonContainsMemberVal(FILENAME, "accountNumber", Integer.toString(accountNumber))){
+            System.out.println("transaction unsuccessful: account doesn't exist");
+            return -1; //account wasn't found
+        }
 
         if(fromAccountType == SAVINGSID){
             toBalanceName = "checkingBalance";

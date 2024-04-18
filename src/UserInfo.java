@@ -27,14 +27,12 @@ public class UserInfo {
         this.username = username;
         this.password = password;
 
-        //generate random bill history
+        //generate random bill data
         this.billHistory[0] = "100,3,2";
         this.billHistory[1] = "100,5,4";
         this.billHistory[2] = "100,7,5";
 
         this.nextBill = "100,10,-1";
-
-
     }
 
     public int getAccountNumber() {
@@ -60,6 +58,23 @@ public class UserInfo {
     public void setPassword(String password){
         this.password = password;
     }
+
+    public String getNextBill() {
+        return nextBill;
+    }
+
+    public void setNextBill(String nextBill) {
+        this.nextBill = nextBill;
+    }
+
+    public String[] getBillHistory() {
+        return billHistory;
+    }
+
+    public void setBillHistory(String[] billHistory) {
+        this.billHistory = billHistory;
+    }
+
 
     public JsonObject toJsonObject(){
         JsonObject jsonObject = new JsonObject();

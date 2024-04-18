@@ -20,7 +20,6 @@ public class UtilCompany {
     /*
      * Function to create a new user account for the utility company / bank.
      * Takes a username and a password for the new account and stores them in the utility file
-     * //TODO: make this also initialize bills when that functionality is added
      */
     public void createUserAccount(){
         boolean successful = false;
@@ -101,8 +100,8 @@ public class UtilCompany {
      */
     public void checkBillPaymentHistory(int accountNumber){
         //TODO: implement function
-        //open utility file
-        //read the bill payment history stored and display it to the user
+        String accountBillHistory = jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), "billHistory");
+        System.out.println(accountBillHistory);
     }
 
     /*
@@ -152,6 +151,8 @@ public class UtilCompany {
         jsonObject.addProperty("accountNumber", userAccount.getAccountNumber());
         jsonObject.addProperty("username", userAccount.getUsername());
         jsonObject.addProperty("password", userAccount.getPassword());
+        jsonObject.addProperty("billHistory", userAccount.getBillHistory().toString());
+        jsonObject.addProperty("nextBill", userAccount.getNextBill());
         return jsonObject;
     }
 }
