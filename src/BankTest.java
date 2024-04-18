@@ -13,6 +13,7 @@ class BankTest {
     @Test
     public void testOpenNewAccountSuccess() {
         bank = new Bank();
+        bank.deleteAccount(123456);
         int newAccountNumber = 123456; // Assume this number does not exist in the JSON
         assertEquals("Opening a new account should succeed",0, bank.openAccount(newAccountNumber));
         bank.deleteAccount(newAccountNumber);
@@ -27,5 +28,5 @@ class BankTest {
         assertEquals("Opening an account that already exists should fail", -1, bank.openAccount(existingAccountNumber));
         bank.deleteAccount(existingAccountNumber);
     }
-    
+
 }

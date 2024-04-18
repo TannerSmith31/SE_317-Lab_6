@@ -2,6 +2,8 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -182,26 +184,37 @@ public class JsonFileUtil {
         }
         return 0; //succsessful
     }
+    private final Gson gson = new GsonBuilder().create();
 
-    public boolean deleteAccountFromJsonFile(String filename, int accountNumber) {
-        // Read the existing accounts from the file
-        List<Map<String, Object>> accounts = readAccountsFromFile(filename);
+        public boolean deleteAccountFromJsonFile(String filename, int accountNumber) {
+            // Define the correct type for the list of accounts
+            Type accountListType = new TypeToken<ArrayList<BankAccount>>(){}.getType();
 
-        // Check if the account exists
-        boolean accountExists = accounts.stream()
-                .anyMatch(account -> accountNumber == ((Double) account.get("accountNumber")).intValue());
+            try {
+                // Read the existing accounts from the file
+                FileReader reader = new FileReader(filename);
+                List<BankAccount> accounts = gson.fromJson(reader, accountListType);
+                reader.close();
 
-        if (!accountExists) {
-            System.out.println("Account not found for account number: " + accountNumber);
-            return false;
+                // Check if the account exists and remove it
+                boolean removed = accounts.removeIf(account -> account.getAccountNumber() == accountNumber);
+
+                if (!removed) {
+                    System.out.println("Account not found for account number: " + accountNumber);
+                    return false;
+                }
+
+                // Write the updated accounts back to the file
+                FileWriter writer = new FileWriter(filename);
+                gson.toJson(accounts, writer);
+                writer.close();
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
         }
-
-        // Remove the account with the given accountNumber
-        accounts.removeIf(account -> accountNumber == ((Double) account.get("accountNumber")).intValue());
-
-        // Write the updated accounts back to the file
-        return writeAccountsToFile(filename, accounts);
-    }
 
     private List<Map<String, Object>> readAccountsFromFile(String filename) {
         try (Reader reader = new FileReader(filename)) {
