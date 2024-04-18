@@ -99,6 +99,38 @@ class BankTest {
                 initialBalance,
                 bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID()));
     }
+    @Test
+    public void testDepositToCheckingAccount() {
+        bank = new Bank();
+        int depositAmount = 500;
+        int initialBalance = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID());
+        bank.deposit(FILENAME, VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), depositAmount);
+        assertEquals("Balance should increase by the deposit amount",
+                initialBalance + depositAmount,
+                bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
+    }
 
+    @Test
+    public void testDepositToSavingsAccount() {
+        bank = new Bank();
+        int depositAmount = 500;
+        int initialBalance = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID());
+        bank.deposit(FILENAME, VALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), depositAmount);
+        assertEquals("Balance should increase by the deposit amount",
+                initialBalance + depositAmount,
+                bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID()));
+    }
+
+    @Test
+    public void testDepositOverDailyLimit() {
+        bank = new Bank();
+        // Assuming there is a daily deposit limit (e.g., $5000)
+        int depositAmount = 5001; // More than the daily limit
+        int initialBalance = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID());
+        bank.deposit(FILENAME, VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), depositAmount);
+        assertEquals("Balance should not change when depositing over the daily limit",
+                initialBalance,
+                bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
+    }
 
 }
