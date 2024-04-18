@@ -11,6 +11,7 @@ public class UtilCompany {
     //instance variables
     private String FILENAME = "userAccounts.json";
     private JsonFileUtil jsonFileUtil = new JsonFileUtil();
+    private Bank bank = new Bank();
 
     public UtilCompany(){
         //constructor
@@ -65,6 +66,9 @@ public class UtilCompany {
 
         //add the new user account info to the json array
         jsonFileUtil.addToJsonFile(FILENAME, newUsrAccnt.toJsonObject());
+
+        //add an account for the user in the BankAccounts.json as well
+        bank.openAccount(accountNumber);
         System.out.println("Successfully added user. Your account number is " + accountNumber);
     }
 

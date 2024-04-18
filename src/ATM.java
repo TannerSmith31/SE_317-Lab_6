@@ -3,7 +3,7 @@ public class ATM {
         UtilCompany testCompany = new UtilCompany();
         Bank testBank = new Bank();
 //        testCompany.createUserAccount();
-//        System.out.println(testBank.getBalance(470569, testBank.getSAVINGSID()));
+//        System.out.println(testBank.getBalance(132772, testBank.getSAVINGSID()));
         int testval = testCompany.userLogin("username","Tanner", "123");
         System.out.println(testval);
         System.out.println("Hello world!");
