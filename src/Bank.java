@@ -200,7 +200,29 @@ public class Bank {
 
         return 0;
     }
+    /**
+     * Deletes a bank account with the given account number.
+     *
+     * @param accountNumber The account number of the account to be deleted.
+     * @return true if the account was successfully deleted; false otherwise.
+     */
+    public boolean deleteAccount(int accountNumber) {
+        // Check if the account exists
+        if (!jsonFileUtil.jsonContainsMemberVal(FILENAME, "accountNumber", Integer.toString(accountNumber))) {
+            System.out.println("Account number " + accountNumber + " does not exist.");
+            return false; // Account does not exist
+        }
 
+        // If the account exists, delete the account
+        boolean isDeleted = jsonFileUtil.deleteAccountFromJsonFile(FILENAME, accountNumber);
+
+        if (isDeleted) {
+            System.out.println("Account number " + accountNumber + " has been successfully deleted.");
+        } else {
+            System.out.println("There was an error deleting account number " + accountNumber + ".");
+        }
+        return isDeleted;
+    }
     public String getFILENAME() {
         return FILENAME;
     }
@@ -212,4 +234,5 @@ public class Bank {
     public int getSAVINGSID(){
         return SAVINGSID;
     }
+
 }
