@@ -20,9 +20,9 @@ public class UtilCompany {
     /*
      * Function to create a new user account for the utility company / bank.
      * Takes a username and a password for the new account and stores them in the utility file
-     * //TODO: make this also initialize bills when that functionality is added
+     * returns the account number of the newly created account
      */
-    public void createUserAccount(){
+    public int createUserAccount(){
         boolean successful = false;
         Scanner usrIn = new Scanner(System.in); //scanner to take user input
         Random random = new Random();
@@ -70,6 +70,7 @@ public class UtilCompany {
         //add an account for the user in the BankAccounts.json as well
         bank.openAccount(accountNumber);
         System.out.println("Successfully added user. Your account number is " + accountNumber);
+        return accountNumber;
     }
 
     /*
@@ -100,31 +101,72 @@ public class UtilCompany {
      * function to check a users bill payment history
      */
     public void checkBillPaymentHistory(int accountNumber){
-        //TODO: implement function
-        //open utility file
-        //read the bill payment history stored and display it to the user
+        String accountBillHistoryRaw = jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), "billHistory");
+        String[] accountBillHistoryArr = accountBillHistoryRaw.split("\\.");
+        System.out.println("--Bill History--");
+        for(int i = 0; i<3; i++){
+            String[] singleBillArr = accountBillHistoryArr[i].split(",");
+            System.out.print(i +". ammount: " + singleBillArr[0] + " dueDate: " + singleBillArr[1] + " datePaid: ");
+            if(Integer.parseInt(singleBillArr[2]) <0){
+                System.out.println("UNPAID");
+            }else{
+                System.out.println(singleBillArr[2]);
+            }
+        }
     }
 
     /*
-     * function to check a users next bill payment
+     * function to check a users next bill payment.
+     * The nextBillPayment variable is set up as "<amntDue>,<DueDate>,<AmntPaid>"
      */
     public void checkNextBillPayment(int accountNumber){
-        //TODO: implement function
-        //open up the utility file
-        //read what the next bill payment is
+        String nextBillPaymentRaw = jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), "nextBill");
+        String[] nextBillPaymentArr = nextBillPaymentRaw.split(",");
+        System.out.println("Next Payment due:");
+        System.out.println(">Amount Due: " + nextBillPaymentArr[0]);
+        System.out.println(">Due Date: " + nextBillPaymentArr[1]);
+        System.out.println(">Amount Paid: " + nextBillPaymentArr[2]);
     }
 
     /*
      * makes a bill payment from the users checking account
-     * TODO: see if you have to pay the bill all at once or if there is an option to pay part of it
+     * NOTE: you cannot overpay a bill (you have to give exact amount due or less)
+     * TODO: make this update bill history and generate a new bill?
      */
-    public void makeBillPayment(int accountNumber, int amount){
-        //TODO: implement function
-        //get the next bill that the user has to pay
-        //try to pay the amount to it
-        //if the amount is too much, send message to user?
-        //if not enough money in account, throw error (the transaction function will do this and maybe I catch it here and display to user?
-        //if bill gets fully paid, generate a new next bill payment? or are all of them generated?
+    public int makeBillPayment(int accountNumber, int amount){
+
+        //Get the next bill the user has to pay and take out the total cost and how much has been paid
+        String nextBillPaymentRaw = jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), "nextBill");
+        String[] nextBillPaymentArr = nextBillPaymentRaw.split(",");
+
+        int billAmount = Integer.parseInt(nextBillPaymentArr[0]);
+        int amountPaid = Integer.parseInt(nextBillPaymentArr[2]);
+        int remainingAmount = billAmount - amountPaid;
+
+        //See if the user is trying to overpay
+        if(amount > remainingAmount){
+            System.out.println("Failed to pay bill: overpaid");
+            return -1;
+        }
+
+        int usrCheckingBalance = Integer.parseInt(jsonFileUtil.getJsonMember(bank.getFILENAME(), "accountNumber", Integer.toString(accountNumber), "checkingBalance"));
+
+        //check if user has enough money in their checking account
+        if(amount > usrCheckingBalance){
+            System.out.println("Failed to pay bill: not enough funds");
+        }
+
+        //you have enough money to pay the bill
+        if(bank.withdrawl(bank.getFILENAME(), accountNumber, bank.getCHECKINGID(), amount) == 0){
+            int newAmountPaid = amountPaid + amount;
+            String newBillPaymentUpdated = nextBillPaymentArr[0] + "," + nextBillPaymentArr[1] + "," + newAmountPaid;
+            jsonFileUtil.setJsonMemberString(FILENAME, "accountNumber", Integer.toString(accountNumber), "nextBill", newBillPaymentUpdated);
+            System.out.println("Successfully made bill payment");
+            return 0;
+        }else {
+            //you already met your max withdrawl for the day. Withdrawl function already notifies user of this
+            return -1;
+        }
     }
 
     /*
@@ -152,6 +194,12 @@ public class UtilCompany {
         jsonObject.addProperty("accountNumber", userAccount.getAccountNumber());
         jsonObject.addProperty("username", userAccount.getUsername());
         jsonObject.addProperty("password", userAccount.getPassword());
+        jsonObject.addProperty("billHistory", userAccount.getBillHistory().toString());
+        jsonObject.addProperty("nextBill", userAccount.getNextBill());
         return jsonObject;
+    }
+
+    public String getFILENAME() {
+        return FILENAME;
     }
 }

@@ -16,5 +16,14 @@
     "dailyCheckingDeposit": 3000,
     "dailySavingsTransfer": 0,
     "dailyCheckingWithdrawl": 50
+  },
+  {
+    "accountNumber": 934493,
+    "savingsBalance": 0,
+    "checkingBalance": 490,
+    "dailySavingsDeposit": 0,
+    "dailyCheckingDeposit": 500,
+    "dailyCheckingWithdrawl": 10,
+    "dailySavingsTransfer": 0
   }
 ]

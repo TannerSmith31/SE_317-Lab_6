@@ -11,9 +11,9 @@ public class BankAccount {
 
     public BankAccount(int accountNumber){
         this.accountNumber = accountNumber;
+        this.savingsBalance = 0;
         this.checkingBalance = 0;
         this.dailyCheckingDeposit = 0;
-        this.savingsBalance = 0;
         this.dailySavingsDeposit = 0;
         this.dailyCheckingWithdrawl = 0;
         this.dailySavingsTransfer = 0;

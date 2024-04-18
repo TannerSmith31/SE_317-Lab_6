@@ -47,6 +47,7 @@ public class Bank {
     public int getBalance(int accountNumber, int accountType){
         //see if the account exists
         if(!jsonFileUtil.jsonContainsMemberVal(FILENAME, "accountNumber", Integer.toString(accountNumber))){
+            System.out.println("Balance check failed: account doesn't exist");
             return -1; //account wasn't found
         }
         if(accountType == SAVINGSID){
@@ -69,6 +70,12 @@ public class Bank {
     public int withdrawl(String filename, int accountNumber, int accountType, int amount) {
         int oldBalance;
         int newBalance;
+
+        //see if the account exists
+        if(!jsonFileUtil.jsonContainsMemberVal(FILENAME, "accountNumber", Integer.toString(accountNumber))){
+            System.out.println("Withdraw unsuccessful: account doesn't exist");
+            return -1; //account wasn't found
+        }
 
         if(accountType == SAVINGSID){
             System.out.println("Withdrawl unsuccessful: Not allowed to withdraw from savings");
@@ -115,6 +122,12 @@ public class Bank {
         int dailyDepositLimit;          //The limit for the correct account (savings or checking)
         String accountBalanceName;      //name of the account the deposit is being done on (savings or checking)
 
+        //see if the account exists
+        if(!jsonFileUtil.jsonContainsMemberVal(FILENAME, "accountNumber", Integer.toString(accountNumber))){
+            System.out.println("Deposit unsuccessful: account doesn't exist");
+            return -1; //account wasn't found
+        }
+
         if(accountType == SAVINGSID){
             dailyDepositName = "dailySavingsDeposit";
             dailyDepositLimit = DAILY_S_DEPOSIT_LIMIT;
@@ -159,6 +172,11 @@ public class Bank {
         String fromBalanceName;
         int newDailySavingsTransfer = 0;
 
+        //see if the account exists
+        if(!jsonFileUtil.jsonContainsMemberVal(FILENAME, "accountNumber", Integer.toString(accountNumber))){
+            System.out.println("transaction unsuccessful: account doesn't exist");
+            return -1; //account wasn't found
+        }
 
         if(fromAccountType == SAVINGSID){
             toBalanceName = "checkingBalance";
@@ -200,6 +218,47 @@ public class Bank {
 
         return 0;
     }
+
+    /*
+     * resets all values daily values to 0 for the dawn of a new day
+     * returns 0 if succesful and -1 if unsuccessful
+     */
+    public int resetDailyValues(String filename){
+        //parse through the accounts json file to find the correct account
+        JsonArray accntsJsonArr;
+        try{
+            FileReader reader = new FileReader(filename);
+            accntsJsonArr = JsonParser.parseReader(reader).getAsJsonArray();
+
+            //Check to find the correct account
+            JsonObject accountObj;
+            for (JsonElement element : accntsJsonArr) {
+                accountObj = element.getAsJsonObject();
+
+                //update the daily values
+                accountObj.addProperty("dailyCheckingDeposit", 0);
+                accountObj.addProperty("dailySavingsDeposit", 0);
+                accountObj.addProperty("dailyCheckingWithdrawl", 0);
+                accountObj.addProperty("dailySavingsTransfer", 0);
+            }
+
+            //remake the list of accounts to put back in the given file
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String accntsJsonString = gson.toJson(accntsJsonArr);
+
+            //put the updated account array into the given file (savings or checking)
+            try (FileWriter writer = new FileWriter(filename)) {
+                writer.append(accntsJsonString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }catch(Exception e){
+            System.out.println("Error in Bank -> resetDailyValues()");
+            return -1;
+        }
+        return 0; //successful
+    }
+
     /**
      * Deletes a bank account with the given account number.
      *

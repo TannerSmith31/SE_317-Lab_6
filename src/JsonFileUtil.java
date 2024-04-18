@@ -41,7 +41,6 @@ public class JsonFileUtil {
     /*
      * function to set a string member of a Json object with a given account number in an array
      * returns 0 if successful, -1 if account didn't exist, -2 if other error occured
-     * //TODO: handle other errors?
      */
     public int setJsonMemberString(String filename, String searchMemberName, String searchMemberVal, String newMemberName, String newVal){
         //parse through the accounts json file to find the correct account
@@ -64,6 +63,7 @@ public class JsonFileUtil {
 
             //check to see if the account was found
             if(!accountFound){
+                System.out.println("account not found in JsonFileUtil -> setJsonMemberString");
                 return -1; //failed to find the account
             }
 
@@ -87,7 +87,6 @@ public class JsonFileUtil {
     /*
      * function to set an integer member of a Json object with a given member value in an array
      * returns 0 if successful, -1 if account didn't exist, -2 if error occured
-     * //TODO: handle other errors?
      */
     public int setJsonMemberInt(String filename, String searchMemberName, String searchMemberVal, String newMemberName, int newVal){
         //parse through the accounts json file to find the correct account
@@ -110,6 +109,7 @@ public class JsonFileUtil {
 
             //check to see if the account was found
             if(!accountFound){
+                System.out.println("Failed to find account in JsonFileUtil -> setJsonMemberInt");
                 return -1; //failed to find the account
             }
 
@@ -131,9 +131,8 @@ public class JsonFileUtil {
     }
 
     /*
-     * function to to check if a certain member has a certain value in the array of json objects in a file
+     * function to check if a certain member has a certain value in the array of json objects in a file
      * returns true if exists, false if not
-     * //TODO: handle other errors?
      */
     public boolean jsonContainsMemberVal(String filename, String memberName, String keyVal){
         //parse through the accounts json file to find the correct account
@@ -160,7 +159,7 @@ public class JsonFileUtil {
 
     public int addToJsonFile(String filename, JsonObject newObject){
         JsonArray accntsJsonArr;
-        try(FileReader reader = new FileReader(filename)){ //TODO: handle a fileNotFoundException (maybe just print to screen "please create account file" in the catch block so it looks like we handled it)
+        try(FileReader reader = new FileReader(filename)){
             try {
                 accntsJsonArr = JsonParser.parseReader(reader).getAsJsonArray();
             }catch(IllegalStateException e2){
@@ -180,7 +179,8 @@ public class JsonFileUtil {
                 e.printStackTrace();
             }
         }catch(IOException e){
-            e.printStackTrace();
+            System.out.println("Error in JsonFileUtil -> addToJsonfile()");
+            return -1;
         }
         return 0; //succsessful
     }
