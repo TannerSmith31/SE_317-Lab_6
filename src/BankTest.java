@@ -8,14 +8,13 @@ import static org.junit.Assert.*;
 
 class BankTest {
     private Bank bank;
+    private final int VALID_ACCOUNT_NUMBER = 131547; // Use an account number known to be valid
+    private final int INVALID_ACCOUNT_NUMBER = 999999; // Use an account number known to be invalid
+    private final int SAVINGS = 1; // Assuming 1 represents savings account type
+    private final int CHECKING = 2; // Assuming 2 represents checking account type
+    private final int INVALID_ACCOUNT_TYPE = 3; // Assuming 3 is an invalid account type
 
-//    @Before
-//    public void setUp() {
-//        bank = new Bank();
-//        // Assuming there is a way to clear the JSON file or mock it for testing
-//        // This might involve setting up a temporary test file or using a mocking framework
-//    }
-
+    //creating an account, with success
     @Test
     public void testOpenNewAccountSuccess() {
         bank = new Bank();
@@ -23,59 +22,45 @@ class BankTest {
         assertEquals("Opening a new account should succeed",0, bank.openAccount(newAccountNumber));
         bank.deleteAccount(newAccountNumber);
     }
-
+    //testing when an account already exists
     @Test
     public void testOpenAccountFailureAccountExists() {
         bank = new Bank();
+        bank.openAccount(123456);
         int existingAccountNumber = 123456; // Assume this number already exists
         bank.openAccount(existingAccountNumber); // First, open the account to ensure it exists
         assertEquals("Opening an account that already exists should fail", -1, bank.openAccount(existingAccountNumber));
+        bank.deleteAccount(existingAccountNumber);
     }
 
-//    @Test
-//    public void testOpenAccountFailureWriteError() {
-//        int validAccountNumber = 789012; // Assume this is a valid new number
-//        // Here you'd need to simulate a write error, possibly by mocking jsonFileUtil's behavior
-//        // For the purpose of this example, let's assume we have a method to force a write error:
-//        bank.forceWriteError(true); // A method to simulate error, you will need to implement this logic
-//        assertEquals("Simulating a JSON write error should return -2", -2, bank.openAccount(validAccountNumber));
-//        bank.forceWriteError(false); // Reset the error simulation
-//    }
-
-    @After
-    public void tearDown() {
-        // Clean up the test environment if necessary
-        // This might involve deleting the test JSON file or resetting mock states
-    }
-    @org.junit.jupiter.api.Test
-    void openAccount() {
+    @Test
+    public void testGetBalanceWithValidSavingsAccount() {
+        // Assuming this account has a savings account set up with a known balance
+        bank = new Bank();
+        int expectedBalance = 0; // Replace with the known balance
+        assertEquals("Balance should match the expected value for savings account", expectedBalance, bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID()));
     }
 
-    @org.junit.jupiter.api.Test
-    void getBalance() {
+    @Test
+    public void testGetBalanceWithValidCheckingAccount() {
+        // Assuming this account has a checking account set up with a known balance
+        bank = new Bank();
+        int expectedBalance = 0; // Replace with the known balance
+        assertEquals("Balance should match the expected value for checking account", expectedBalance, bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
     }
 
-    @org.junit.jupiter.api.Test
-    void withdrawl() {
+    @Test
+    public void testGetBalanceWithInvalidAccountNumber() {
+        bank = new Bank();
+        int expectedFailure = -1; // Assuming that -1 indicates failure due to invalid account number
+        assertEquals("Should fail due to invalid account number", expectedFailure, bank.getBalance(INVALID_ACCOUNT_NUMBER, bank.getSAVINGSID()));
     }
 
-    @org.junit.jupiter.api.Test
-    void deposit() {
+    @Test
+    public void testGetBalanceWithInvalidAccountType() {
+        bank = new Bank();
+        int expectedFailure = -2; // Assuming that -2 indicates failure due to invalid account type
+        assertEquals("Should fail due to invalid account type", expectedFailure, bank.getBalance(VALID_ACCOUNT_NUMBER, INVALID_ACCOUNT_TYPE));
     }
 
-    @org.junit.jupiter.api.Test
-    void transaction() {
-    }
-
-    @org.junit.jupiter.api.Test
-    void getFILENAME() {
-    }
-
-    @org.junit.jupiter.api.Test
-    void getCHECKINGID() {
-    }
-
-    @org.junit.jupiter.api.Test
-    void getSAVINGSID() {
-    }
 }
