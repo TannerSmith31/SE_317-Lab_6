@@ -62,5 +62,41 @@ class BankTest {
         int expectedFailure = -2; // Assuming that -2 indicates failure due to invalid account type
         assertEquals("Should fail due to invalid account type", expectedFailure, bank.getBalance(VALID_ACCOUNT_NUMBER, INVALID_ACCOUNT_TYPE));
     }
+    @Test
+    public void testWithdrawalWithSufficientFunds() {
+        // Assuming the account has enough funds for the withdrawal
+        bank = new Bank();
+        int withdrawalAmount = 50;
+        int initialBalance = bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID());
+        bank.withdrawl(FILENAME,ACCOUNT_WITH_FUNDS, bank.getCHECKINGID(), withdrawalAmount);
+        assertEquals("Balance should be reduced by withdrawal amount",
+                initialBalance - withdrawalAmount,
+                bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID()));
+    }
+
+    @Test
+    public void testWithdrawalWithInsufficientFunds() {
+        bank = new Bank();
+        // Assuming the account does not have enough funds for the withdrawal
+        int withdrawalAmount = 10000; // More than the current balance
+        int initialBalance = bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID());
+        bank.withdrawl(FILENAME, ACCOUNT_WITH_FUNDS, bank.getCHECKINGID(), withdrawalAmount);
+        assertEquals("Balance should not change when withdrawing more than available funds",
+                initialBalance,
+                bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID()));
+    }
+
+    @Test
+    public void testWithdrawalOverDailyLimit() {
+        bank = new Bank();
+        // Assuming there is a daily withdrawal limit (e.g., $500)
+        int withdrawalAmount = 501; // More than the daily limit
+        int initialBalance = bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID());
+        bank.withdrawl(FILENAME,ACCOUNT_WITH_FUNDS, bank.getCHECKINGID(), withdrawalAmount);
+        assertEquals("Balance should not change when withdrawing over the daily limit",
+                initialBalance,
+                bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID()));
+    }
+
 
 }
