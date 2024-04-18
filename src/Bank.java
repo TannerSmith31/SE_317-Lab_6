@@ -151,7 +151,6 @@ public class Bank {
      * returns 0 if successful and -1 otherwise
      */
     public int transaction(int accountNumber, int fromAccountType, int amount){
-        //TODO: implement function
         int oldToBalance;
         int newToBalance;
         int oldFromBalance;
@@ -200,7 +199,6 @@ public class Bank {
         System.out.println("Deposit successful");
 
         return 0;
-
     }
     /**
      * Deletes a bank account with the given account number.

@@ -13,8 +13,10 @@ public class UserInfo {
     private String username;
     private String password;
 
-    //TODO: add an array of bill payment history here
-    //TODO: add a variable for next bill payment
+    //Bill variables. bills are set up as strings in the following way: "<billID>,<billAmnt>,<dueDate>,<datePaid>"
+    private String nextBill;
+    private String[] billHistory = new String[3];
+
 
     public UserInfo(){
         //default constructor
@@ -24,6 +26,14 @@ public class UserInfo {
         this.accountNumber = accountNumber;
         this.username = username;
         this.password = password;
+
+        //generate random bill history
+        this.billHistory[0] = "100,3,2";
+        this.billHistory[1] = "100,5,4";
+        this.billHistory[2] = "100,7,5";
+
+        this.nextBill = "100,10,-1";
+
 
     }
 
