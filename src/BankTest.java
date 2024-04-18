@@ -37,7 +37,10 @@ class BankTest {
         // Assuming this account has a savings account set up with a known balance
         bank = new Bank();
         int expectedBalance = 0; // Replace with the known balance
-        assertEquals("Balance should match the expected value for savings account", expectedBalance, bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID()));
+         bank.openAccount(5678999);
+        assertEquals("Balance should match the expected value for savings account", expectedBalance, bank.getBalance(5678999, bank.getSAVINGSID()));
+        bank.deleteAccount(5678999);
+
     }
 
     @Test
@@ -45,7 +48,10 @@ class BankTest {
         // Assuming this account has a checking account set up with a known balance
         bank = new Bank();
         int expectedBalance = 0; // Replace with the known balance
-        assertEquals("Balance should match the expected value for checking account", expectedBalance, bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
+        bank.openAccount(5678999);
+        assertEquals("Balance should match the expected value for checking account", expectedBalance, bank.getBalance(5678999, bank.getCHECKINGID()));
+        bank.deleteAccount(5678999);
+
     }
 
     @Test
@@ -99,12 +105,14 @@ class BankTest {
     @Test
     public void testDepositToCheckingAccount() {
         bank = new Bank();
-        int depositAmount = 500;
-        int initialBalance = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID());
-        bank.deposit(bank.getFILENAME(), VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), depositAmount);
+        int depositAmount = 100;
+        bank.openAccount(5678999);
+        int initialBalance = bank.getBalance(5678999, bank.getCHECKINGID());
+        bank.deposit(bank.getFILENAME(), 5678999, bank.getCHECKINGID(), depositAmount);
         assertEquals("Balance should increase by the deposit amount",
                 initialBalance + depositAmount,
-                bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
+                bank.getBalance(5678999, bank.getCHECKINGID()));
+        bank.deleteAccount(5678999);
     }
 
     @Test
@@ -134,33 +142,38 @@ class BankTest {
     public void testSingleTransaction() {
         bank = new Bank();
         // Test a single transaction, e.g., deposit to checking
+        bank.openAccount(5678999);
         int depositAmount = 100;
-        int initialBalance = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID());
-        bank.deposit(bank.getFILENAME(), VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), depositAmount);
+        int initialBalance = bank.getBalance(5678999, bank.getCHECKINGID());
+        bank.deposit(bank.getFILENAME(), 5678999, bank.getCHECKINGID(), depositAmount);
         assertEquals("Balance should be correctly updated after deposit",
                 initialBalance + depositAmount,
-                bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
+                bank.getBalance(5678999, bank.getCHECKINGID()));
+        bank.deleteAccount(5678999);
     }
 
     @Test
     public void testMultipleTransactions() {
         bank = new Bank();
+        bank.openAccount(5678999);
         // Test a series of transactions: deposit then withdraw from checking
+
         int depositAmount = 200;
         int withdrawalAmount = 50;
-        int initialBalance = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID());
+        int initialBalance = bank.getBalance(5678999, bank.getCHECKINGID());
 
         // Perform a deposit
-        bank.deposit(bank.getFILENAME(), VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), depositAmount);
+        bank.deposit(bank.getFILENAME(), 5678999, bank.getCHECKINGID(), depositAmount);
         assertEquals("Balance should be correctly updated after deposit",
                 initialBalance + depositAmount,
-                bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
+                bank.getBalance(5678999, bank.getCHECKINGID()));
 
         // Perform a withdrawal
-        bank.withdrawl(bank.getFILENAME(), VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), withdrawalAmount);
+        bank.withdrawl(bank.getFILENAME(), 5678999, bank.getCHECKINGID(), withdrawalAmount);
         assertEquals("Balance should be correctly updated after withdrawal",
                 initialBalance + depositAmount - withdrawalAmount,
-                bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
+                bank.getBalance(5678999, bank.getCHECKINGID()));
+        bank.deleteAccount(5678999);
     }
 
     @Test
