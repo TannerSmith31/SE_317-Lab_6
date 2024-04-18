@@ -9,6 +9,8 @@ import static org.junit.Assert.*;
 class BankTest {
     private Bank bank;
     private final int VALID_ACCOUNT_NUMBER = 131547; // Use an account number known to be valid
+    private final int ACCOUNT_WITH_FUNDS = 132772;
+    private String FILENAME = "bankAccounts.json";
     private final int INVALID_ACCOUNT_NUMBER = 999999; // Use an account number known to be invalid
     private final int SAVINGS = 1; // Assuming 1 represents savings account type
     private final int CHECKING = 2; // Assuming 2 represents checking account type
