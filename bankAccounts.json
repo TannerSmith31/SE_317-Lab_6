@@ -10,10 +10,10 @@
   },
   {
     "accountNumber": 132772,
-    "savingsBalance": 10,
-    "checkingBalance": 0,
-    "dailySavingsDeposit": 0,
-    "dailyCheckingDeposit": 0,
+    "savingsBalance": 70,
+    "checkingBalance": 3000,
+    "dailySavingsDeposit": 60,
+    "dailyCheckingDeposit": 3000,
     "dailyCheckingWithdrawl": 0,
     "dailySavingsTransfer": 0
   }

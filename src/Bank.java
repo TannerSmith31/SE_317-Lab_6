@@ -90,6 +90,9 @@ public class Bank {
                 return -1;
             }
 
+            //carry out withdrawl (update account balance and dailyAmmnt)
+            jsonFileUtil.setJsonMemberInt(FILENAME, "accountNumber", Integer.toString(accountNumber), "dailyCheckingWithdrawl", newDailyCheckingWithdrawl);
+            jsonFileUtil.setJsonMemberInt(FILENAME, "accountNumber", Integer.toString(accountNumber), "checkingBalance", newBalance);
             System.out.println("Withdraw Successful");
             return 0;
 
@@ -99,26 +102,57 @@ public class Bank {
         }
     }
 
+    /*
+     * function to make a deposit into either checking or savings account (denoted by accountType)
+     * Rules:
+     *  Can only deposit $5000 a day in either Savings or checking
+     * Returns 0 if successful, -1 otherwise
+     */
     public int deposit(String filename, int accountNumber, int accountType, int amount) {
-        //TODO: implement function
-        return 0; //successful
+        int oldBalance;
+        int newBalance;
+        String dailyDepositName;        //The name of which daily counter we want to update (savings or checking)
+        int dailyDepositLimit;          //The limit for the correct account (savings or checking)
+        String accountBalanceName;      //name of the account the deposit is being done on (savings or checking)
+
+        if(accountType == SAVINGSID){
+            dailyDepositName = "dailySavingsDeposit";
+            dailyDepositLimit = DAILY_S_DEPOSIT_LIMIT;
+            accountBalanceName = "savingsBalance";
+        }else if(accountType == CHECKINGID){
+            dailyDepositName = "dailyCheckingDeposit";
+            dailyDepositLimit = DAILY_C_DEPOSIT_LIMIT;
+            accountBalanceName = "checkingBalance";
+        }else{
+            System.out.println("Invalid accountType in Bank -> withdrawl()");
+            return -1;
+        }
+
+        int newDailyDeposit = Integer.parseInt(jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), dailyDepositName)) + amount;
+        if(newDailyDeposit > dailyDepositLimit){
+            System.out.println("Deposit unsuccessful: deposit exceeds daily limit");
+            return -1;
+        }
+        oldBalance = Integer.parseInt(jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), accountBalanceName));
+        newBalance = oldBalance + amount;
+
+        //carry out deposit (update balance and daily deposit)
+        jsonFileUtil.setJsonMemberInt(FILENAME, "accountNumber", Integer.toString(accountNumber), accountBalanceName, newBalance);
+        jsonFileUtil.setJsonMemberInt(FILENAME, "accountNumber", Integer.toString(accountNumber), dailyDepositName, newDailyDeposit);
+        System.out.println("Deposit successful");
+        return 0;
     }
 
     /*
-     * function to make a savings account transaction
-     * SAVINGS RULES:
-     *  balance can't go below 0
-     *  can't deposit more than $5000 in one day
-     *  can't withdraw money
-     *  can't transfer over $100 per day to checking
-     * CHECKING RULES:
-     *  balance can't go below 0
-     *  can't deposit more than $5000 in one day
-     *  can't withdraw more than $500 in one day
-     *  can transfer any
+     * function to make a transaction between accounts
+     * RULES:
+     *  can only transfer $100 a day from savings to checking
+     *  cant make any account go negative
+     * returns 0 if successful and -1 otherwise
      */
     public void transaction(int accountNumber){
         //TODO: implement function
+
     }
 
     public String getFILENAME() {
