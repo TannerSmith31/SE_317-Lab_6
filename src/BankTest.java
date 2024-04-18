@@ -73,7 +73,7 @@ class BankTest {
         bank = new Bank();
         int withdrawalAmount = 50;
         int initialBalance = bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID());
-        bank.withdrawl(bank.getFILENAME(),ACCOUNT_WITH_FUNDS, bank.getCHECKINGID(), withdrawalAmount);
+        bank.withdraw(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID(), withdrawalAmount);
         assertEquals("Balance should be reduced by withdrawal amount",
                 initialBalance - withdrawalAmount,
                 bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID()));
@@ -85,7 +85,9 @@ class BankTest {
         // Assuming the account does not have enough funds for the withdrawal
         int withdrawalAmount = 10000; // More than the current balance
         int initialBalance = bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID());
-        bank.withdrawl(bank.getFILENAME(), ACCOUNT_WITH_FUNDS, bank.getCHECKINGID(), withdrawalAmount);
+
+        bank.withdraw(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID(), withdrawalAmount);
+
         assertEquals("Balance should not change when withdrawing more than available funds",
                 initialBalance,
                 bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID()));
@@ -97,7 +99,7 @@ class BankTest {
         // Assuming there is a daily withdrawal limit (e.g., $500)
         int withdrawalAmount = 501; // More than the daily limit
         int initialBalance = bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID());
-        bank.withdrawl(bank.getFILENAME(),ACCOUNT_WITH_FUNDS, bank.getCHECKINGID(), withdrawalAmount);
+        bank.withdraw(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID(), withdrawalAmount);
         assertEquals("Balance should not change when withdrawing over the daily limit",
                 initialBalance,
                 bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID()));
@@ -108,7 +110,7 @@ class BankTest {
         int depositAmount = 100;
         bank.openAccount(5678999);
         int initialBalance = bank.getBalance(5678999, bank.getCHECKINGID());
-        bank.deposit(bank.getFILENAME(), 5678999, bank.getCHECKINGID(), depositAmount);
+        bank.deposit( 5678999, bank.getCHECKINGID(), depositAmount);
         assertEquals("Balance should increase by the deposit amount",
                 initialBalance + depositAmount,
                 bank.getBalance(5678999, bank.getCHECKINGID()));
@@ -120,7 +122,7 @@ class BankTest {
         bank = new Bank();
         int depositAmount = 500;
         int initialBalance = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID());
-        bank.deposit(bank.getFILENAME(), VALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), depositAmount);
+        bank.deposit( VALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), depositAmount);
         assertEquals("Balance should increase by the deposit amount",
                 initialBalance + depositAmount,
                 bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID()));
@@ -132,7 +134,7 @@ class BankTest {
         // Assuming there is a daily deposit limit (e.g., $5000)
         int depositAmount = 5001; // More than the daily limit
         int initialBalance = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID());
-        bank.deposit(bank.getFILENAME(), VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), depositAmount);
+        bank.deposit(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), depositAmount);
         assertEquals("Balance should not change when depositing over the daily limit",
                 initialBalance,
                 bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
@@ -145,7 +147,7 @@ class BankTest {
         bank.openAccount(5678999);
         int depositAmount = 100;
         int initialBalance = bank.getBalance(5678999, bank.getCHECKINGID());
-        bank.deposit(bank.getFILENAME(), 5678999, bank.getCHECKINGID(), depositAmount);
+        bank.deposit(5678999, bank.getCHECKINGID(), depositAmount);
         assertEquals("Balance should be correctly updated after deposit",
                 initialBalance + depositAmount,
                 bank.getBalance(5678999, bank.getCHECKINGID()));
@@ -163,13 +165,13 @@ class BankTest {
         int initialBalance = bank.getBalance(5678999, bank.getCHECKINGID());
 
         // Perform a deposit
-        bank.deposit(bank.getFILENAME(), 5678999, bank.getCHECKINGID(), depositAmount);
+        bank.deposit( 5678999, bank.getCHECKINGID(), depositAmount);
         assertEquals("Balance should be correctly updated after deposit",
                 initialBalance + depositAmount,
                 bank.getBalance(5678999, bank.getCHECKINGID()));
 
         // Perform a withdrawal
-        bank.withdrawl(bank.getFILENAME(), 5678999, bank.getCHECKINGID(), withdrawalAmount);
+        bank.withdraw( 5678999, bank.getCHECKINGID(), withdrawalAmount);
         assertEquals("Balance should be correctly updated after withdrawal",
                 initialBalance + depositAmount - withdrawalAmount,
                 bank.getBalance(5678999, bank.getCHECKINGID()));
@@ -183,7 +185,7 @@ class BankTest {
         int withdrawalAmount = 500; // Set this to more than the current balance
         int initialBalance = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID());
 
-        bank.withdrawl(bank.getFILENAME(), VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), withdrawalAmount);
+        bank.withdraw(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID(), withdrawalAmount);
         assertEquals("Balance should not change when withdrawal exceeds balance",
                 initialBalance,
                 bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getCHECKINGID()));
@@ -195,7 +197,7 @@ class BankTest {
         int transferAmount = 10; // An amount within the daily limit
         int initialCheckingBalance = bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getCHECKINGID());
         int initialSavingsBalance = bank.getBalance(ACCOUNT_WITH_FUNDS, bank.getSAVINGSID());
-        int result = bank.transaction(ACCOUNT_WITH_FUNDS, bank.getSAVINGSID(), transferAmount);
+        int result = bank.transfer(ACCOUNT_WITH_FUNDS, bank.getSAVINGSID(), transferAmount);
 
         // Verify that the transaction was successful
         assertEquals("Transaction should succeed", 0, result);
@@ -214,7 +216,7 @@ class BankTest {
         bank = new Bank();
         // Attempt to transfer an amount that exceeds the daily transfer limit
         int transferAmount = bank.getDAILY_S_TRANSFER_LIMIT() + 1; // Exceeding the limit
-        int result = bank.transaction(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), transferAmount);
+        int result = bank.transfer(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), transferAmount);
 
         // Verify that the transaction failed due to daily limit
         assertEquals("Transaction should fail due to daily limit", -1, result);
@@ -225,7 +227,7 @@ class BankTest {
         bank = new Bank();
         // Attempt to transfer more than the available savings balance
         int transferAmount = bank.getBalance(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID()) + 1; // More than available balance
-        int result = bank.transaction(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), transferAmount);
+        int result = bank.transfer(VALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), transferAmount);
 
         // Verify that the transaction failed due to insufficient funds
         assertEquals("Transaction should fail due to insufficient funds", -1, result);
@@ -236,7 +238,7 @@ class BankTest {
         bank = new Bank();
         // Attempt to perform a transaction with an invalid account number
         int transferAmount = 100; // Any amount for the purpose of this test
-        int result = bank.transaction(INVALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), transferAmount);
+        int result = bank.transfer(INVALID_ACCOUNT_NUMBER, bank.getSAVINGSID(), transferAmount);
 
         // Verify that the transaction failed due to invalid account number
         assertEquals("Transaction should fail due to invalid account", -1, result);

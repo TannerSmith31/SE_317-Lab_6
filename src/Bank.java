@@ -10,7 +10,7 @@ public class Bank {
     private JsonFileUtil jsonFileUtil = new JsonFileUtil();
     private int SAVINGSID = 1;  //number to represent we want to work with the savings account
     private int CHECKINGID = 2; //number to represent we want to work with the checking account
-    private int DAILY_C_WITHDRAWL_LIMIT = 500;
+    private int DAILY_C_WITHDRAW_LIMIT = 500;
     private int DAILY_C_DEPOSIT_LIMIT = 5000;
     private int DAILY_S_DEPOSIT_LIMIT = 5000;
     private int DAILY_S_TRANSFER_LIMIT = 100;
@@ -60,14 +60,14 @@ public class Bank {
     }
 
     /*
-     * Function to withdrawl money from either checking or savings
+     * Function to withdraw money from either checking or savings
      * RULES:
      *  neither account balance can go negative
      *  Cannot withdraw from Savings account
      *  Can only withdraw up to $500 from Checking in one day
      * Return 0 if successful, return -1 for any error
      */
-    public int withdrawl(String filename, int accountNumber, int accountType, int amount) {
+    public int withdraw(int accountNumber, int accountType, int amount) {
         int oldBalance;
         int newBalance;
 
@@ -78,13 +78,13 @@ public class Bank {
         }
 
         if(accountType == SAVINGSID){
-            System.out.println("Withdrawl unsuccessful: Not allowed to withdraw from savings");
+            System.out.println("Withdraw unsuccessful: Not allowed to withdraw from savings");
             return -1;
         }else if(accountType == CHECKINGID){
-            //Check to see if you will go over your withdrawl limit
-            int newDailyCheckingWithdrawl = Integer.parseInt(jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), "dailyCheckingWithdrawl")) + amount;
-            if(newDailyCheckingWithdrawl > DAILY_C_WITHDRAWL_LIMIT){
-                System.out.println("Withdrawl unsuccessful: withdrawl exceeds daily limit");
+            //Check to see if you will go over your withdraw limit
+            int newDailyCheckingWithdraw = Integer.parseInt(jsonFileUtil.getJsonMember(FILENAME, "accountNumber", Integer.toString(accountNumber), "dailyCheckingWithdraw")) + amount;
+            if(newDailyCheckingWithdraw > DAILY_C_WITHDRAW_LIMIT){
+                System.out.println("Withdraw unsuccessful: withdraw exceeds daily limit");
                 return -1;
             }
 
@@ -93,18 +93,18 @@ public class Bank {
 
             //check if you will go negative
             if(newBalance < 0){
-                System.out.println("Withdrawl unsuccessful: Not enough money");
+                System.out.println("Withdraw unsuccessful: Not enough money");
                 return -1;
             }
 
-            //carry out withdrawl (update account balance and dailyAmmnt)
-            jsonFileUtil.setJsonMemberInt(FILENAME, "accountNumber", Integer.toString(accountNumber), "dailyCheckingWithdrawl", newDailyCheckingWithdrawl);
+            //carry out withdraw (update account balance and dailyAmmnt)
+            jsonFileUtil.setJsonMemberInt(FILENAME, "accountNumber", Integer.toString(accountNumber), "dailyCheckingWithdraw", newDailyCheckingWithdraw);
             jsonFileUtil.setJsonMemberInt(FILENAME, "accountNumber", Integer.toString(accountNumber), "checkingBalance", newBalance);
             System.out.println("Withdraw Successful");
             return 0;
 
         }else{
-            System.out.println("Invalid accountType in Bank -> withdrawl()");
+            System.out.println("Invalid accountType in Bank -> withdraw()");
             return -1;
         }
     }
@@ -115,7 +115,7 @@ public class Bank {
      *  Can only deposit $5000 a day in either Savings or checking
      * Returns 0 if successful, -1 otherwise
      */
-    public int deposit(String filename, int accountNumber, int accountType, int amount) {
+    public int deposit(int accountNumber, int accountType, int amount) {
         int oldBalance;
         int newBalance;
         String dailyDepositName;        //The name of which daily counter we want to update (savings or checking)
@@ -163,7 +163,7 @@ public class Bank {
      *  cant make any account go negative
      * returns 0 if successful and -1 otherwise
      */
-    public int transaction(int accountNumber, int fromAccountType, int amount){
+    public int transfer(int accountNumber, int fromAccountType, int amount){
         int oldToBalance;
         int newToBalance;
         int oldFromBalance;
@@ -174,7 +174,7 @@ public class Bank {
 
         //see if the account exists
         if(!jsonFileUtil.jsonContainsMemberVal(FILENAME, "accountNumber", Integer.toString(accountNumber))){
-            System.out.println("transaction unsuccessful: account doesn't exist");
+            System.out.println("Transfer unsuccessful: account doesn't exist");
             return -1; //account wasn't found
         }
 
@@ -238,7 +238,7 @@ public class Bank {
                 //update the daily values
                 accountObj.addProperty("dailyCheckingDeposit", 0);
                 accountObj.addProperty("dailySavingsDeposit", 0);
-                accountObj.addProperty("dailyCheckingWithdrawl", 0);
+                accountObj.addProperty("dailyCheckingWithdraw", 0);
                 accountObj.addProperty("dailySavingsTransfer", 0);
             }
 
@@ -286,6 +286,10 @@ public class Bank {
         return FILENAME;
     }
 
+    public void setFILENAME(String newFilename){
+        this.FILENAME = newFilename;
+    }
+
     public int getCHECKINGID() {
         return CHECKINGID;
     }
@@ -295,8 +299,5 @@ public class Bank {
     }
     public int getDAILY_S_TRANSFER_LIMIT(){
         return DAILY_S_TRANSFER_LIMIT;
-    }
-    public int getDAILY_C_WITHDRAWL_LIMIT(){
-        return DAILY_C_WITHDRAWL_LIMIT;
     }
 }

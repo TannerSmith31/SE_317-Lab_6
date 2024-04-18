@@ -10,6 +10,8 @@ public class ATM {
         int curUsrAccntNum;
         Scanner scanner = new Scanner(System.in); //scanner to take user input
         int usrInt;
+        int accntType;  //value for storing account type in bank withdraws, deposits, and transfers
+        int amount;     //value for storing amounts in bank withdraws, deposits, and transfers
         String usrString;
         boolean done = false;
 
@@ -67,29 +69,85 @@ public class ATM {
             return;
         }
 
-        //TODO: finish main atm functionality
-        //start a while loop that runs until you tell it to quit
-        //Things the user can do
-        //> pay bills, check bill history, check next bill, make transfer between accounts, make withdrawls, make deposits, go to next day
-        //All these functions have methods that can be used to accomplish them
+        done = false;
 
+        //loop for main ATM functionality
+        while(!done){
+            System.out.print("Choose an option: (1: view bill history) (2: view next bill) (3: deposit) (4: withdraw) (5: transaction) (6: new dawn) (7:logout)\n > ");
+            usrInt = scanner.nextInt();
+            switch(usrInt) {
+                case 1:
+                    utilCompany.checkBillPaymentHistory(curUsrAccntNum);
+                    break;
 
+                case 2:
+                    utilCompany.checkNextBill(curUsrAccntNum);
+                    break;
 
-//        UtilCompany testCompany = new UtilCompany();
-//        Bank testBank = new Bank();
-////        testCompany.createUserAccount();
-////        System.out.println(testBank.getBalance(132772, testBank.getSAVINGSID()));
-////        testCompany.createUserAccount();
-////        int testval = testCompany.userLogin("username","Tanner", "123");
-////        System.out.println(testval);
-//
-////        testBank.deposit(testBank.getFILENAME(), 132772, testBank.getCHECKINGID(), 3000);
-//        testCompany.checkNextBillPayment(934493);
-//        testBank.deposit(testBank.getFILENAME(), 934493, testBank.getCHECKINGID(), 500);
-//        testCompany.makeBillPayment(934493, 10);
+                case 3:
+                    System.out.print("enter an account to deposit [1=savings 2=checking]: ");
+                    accntType = scanner.nextInt();
+                    System.out.print("enter an ammount to deposit: ");
+                    amount = scanner.nextInt();
+                    if(accntType == 1){
+                        bank.deposit(curUsrAccntNum, bank.getSAVINGSID(), amount);
+                    }else if(accntType == 2){
+                        bank.deposit(curUsrAccntNum, bank.getCHECKINGID(), amount);
+                    }else{
+                        System.out.println("ERROR: invalid input");
+                    }
+                    break;
+
+                case 4:
+                    System.out.print("enter an account to withdraw [1=savings 2=checking]: ");
+                    accntType = scanner.nextInt();
+                    System.out.print("enter an amount to withdraw: ");
+                    amount = scanner.nextInt();
+                    if(accntType == 1){
+                        bank.withdraw(curUsrAccntNum, bank.getSAVINGSID(), amount);
+                    }else if(accntType == 2){
+                        bank.withdraw(curUsrAccntNum, bank.getCHECKINGID(), amount);
+                    }else{
+                        System.out.println("ERROR: invalid input");
+                    }
+                    break;
+
+                case 5:
+                    System.out.print("enter an transfer type [1=savings->checking 2=checking->savings]: ");
+                    accntType = scanner.nextInt();
+                    System.out.print("enter an amount to transfer: ");
+                    amount = scanner.nextInt();
+                    if(accntType == 1){
+                        bank.transfer(curUsrAccntNum, bank.getSAVINGSID(), amount);
+                    }else if(accntType == 2){
+                        bank.transfer(curUsrAccntNum, bank.getCHECKINGID(), amount);
+                    }else{
+                        System.out.println("ERROR: invalid input");
+                    }
+
+                    break;
+                case 6:
+                    //TODO: call newDawn() when it is finished
+
+                    break;
+
+                case 7:
+                    done = true;
+                    System.out.println("Good Bye Cruel World.");
+                    break;
+
+                default:
+                    System.out.println("ERROR: invalid input");
+            }
+        }
+        return;
     }
 
+    /*
+     * function to advance to the next day
+     */
     public void newDawn(){
+        //TODO: implement this function
         //reset all daily values
         //add 1 to curDay
     }
