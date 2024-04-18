@@ -90,6 +90,7 @@ public class ATM {
     }
 
     public void newDawn(){
+        //TODO: implement this function
         //reset all daily values
         //add 1 to curDay
     }
