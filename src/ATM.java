@@ -5,8 +5,10 @@ public class ATM {
     static Bank bank = new Bank();
     static JsonFileUtil jsonFileUtil = new JsonFileUtil();
 
+    static int curDay;
+
     public static void main(String[] args) {
-        int curDay = 10;  //start on day 10 for no reason
+        curDay = 10;  //start on day 10 for no reason
         int curUsrAccntNum;
         Scanner scanner = new Scanner(System.in); //scanner to take user input
         int usrInt;
@@ -127,8 +129,7 @@ public class ATM {
 
                     break;
                 case 6:
-                    //TODO: call newDawn() when it is finished
-
+                    newDawn();
                     break;
 
                 case 7:
@@ -140,15 +141,13 @@ public class ATM {
                     System.out.println("ERROR: invalid input");
             }
         }
-        return;
     }
 
     /*
      * function to advance to the next day
      */
-    public void newDawn(){
-        //TODO: implement this function
-        //reset all daily values
-        //add 1 to curDay
+    public static void newDawn(){
+        bank.resetDailyValues(); //reset daily values for all bank accounts
+        curDay+= 1; //add 1 to day count
     }
 }

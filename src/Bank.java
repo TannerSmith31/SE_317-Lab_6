@@ -223,11 +223,11 @@ public class Bank {
      * resets all values daily values to 0 for the dawn of a new day
      * returns 0 if succesful and -1 if unsuccessful
      */
-    public int resetDailyValues(String filename){
+    public int resetDailyValues(){
         //parse through the accounts json file to find the correct account
         JsonArray accntsJsonArr;
         try{
-            FileReader reader = new FileReader(filename);
+            FileReader reader = new FileReader(FILENAME);
             accntsJsonArr = JsonParser.parseReader(reader).getAsJsonArray();
 
             //Check to find the correct account
@@ -247,7 +247,7 @@ public class Bank {
             String accntsJsonString = gson.toJson(accntsJsonArr);
 
             //put the updated account array into the given file (savings or checking)
-            try (FileWriter writer = new FileWriter(filename)) {
+            try (FileWriter writer = new FileWriter(FILENAME)) {
                 writer.append(accntsJsonString);
             } catch (IOException e) {
                 e.printStackTrace();
