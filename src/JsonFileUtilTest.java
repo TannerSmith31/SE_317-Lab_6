@@ -42,6 +42,14 @@ class JsonFileUtilTest {
         assertEquals("Should read back what was written", jsonArray, readBackData);
     }
     @Test
+    public void testJsonContainsMemberVal() throws IOException {
+        JsonFileUtil util = new JsonFileUtil();
+        String filename = "testData.json";
+        // Assuming data is already in file
+        boolean exists = util.jsonContainsMemberVal(filename, "accountNumber", "123456");
+        assertTrue(exists, "Entry should exist");
+    }
+    @Test
     public void testUpdateJsonData() throws IOException {
         util = new JsonFileUtil();
         // Prepare the test file with initial data
@@ -74,15 +82,6 @@ class JsonFileUtilTest {
     }
 
     @Test
-    public void testJsonContainsMemberVal() throws IOException {
-        JsonFileUtil util = new JsonFileUtil();
-        String filename = "testData.json";
-
-        // Assuming data is already in file
-        boolean exists = util.jsonContainsMemberVal(filename, "accountNumber", "123456");
-        assertTrue(exists, "Entry should exist");
-    }
-    @Test
     public void testDeleteAccountFromJsonFile() {
             util = new JsonFileUtil();
             // Setup a test JSON file with predefined accounts
@@ -114,9 +113,7 @@ class JsonFileUtilTest {
             } catch (IOException e) {
                 fail("Failed to read the test file");
             }
-
     }
-
 
     @Test
     public void testDeleteNonExistentAccount() {

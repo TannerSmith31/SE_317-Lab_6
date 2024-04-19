@@ -1,1 +1,6 @@
-[{"accountNumber":789101,"savingsBalance":0,"checkingBalance":0,"dailySavingsDeposit":0,"dailyCheckingDeposit":0,"dailySavingsTransfer":0,"dailyCheckingWithdraw":0}]
+[
+  {
+    "accountNumber": "123456",
+    "balance": 200
+  }
+]
