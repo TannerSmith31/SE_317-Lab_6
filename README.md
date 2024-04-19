@@ -1,3 +1,12 @@
+HOW TO DEPLOY:
+
+Unzip file, open project in IDE (IntelliJ) 
+Be sure that bankAccounts.json, and userAccounts.json exist in project structure. 
+Use 17 JBR for java. 
+Run ATM class, green play button at top right. 
+Follow prompts. 
+
+
 HOW IT WORKS:
 
 Our application has implemented all the features detailed in the lab document. We have achieved persistent data by the use of two JSON files. One is called “bankAccounts.json” which stores all the information about a users bank account including checking account balance, savings account balance, etc. The other is called “userInfo.json” that stores the users utilCompany information including their username, password, and account number. This information in the user file is how users can login to their account (they are given the option to login with username OR account number). If the user fails to enter a valid username or password, the program will print out a message saying their info was invalid and then end. After logging in, the user has 9 options:
