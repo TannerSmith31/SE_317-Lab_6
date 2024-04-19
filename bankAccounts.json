@@ -1,38 +1,11 @@
 [
   {
-    "accountNumber": 131547,
-    "savingsBalance": 2400,
-    "checkingBalance": 4100,
-    "dailySavingsDeposit": 0,
-    "dailyCheckingDeposit": 0,
-    "dailySavingsTransfer": 0,
-    "dailyCheckingWithdraw": 0
-  },
-  {
-    "accountNumber": 132772,
-    "savingsBalance": 20,
-    "checkingBalance": 2599,
-    "dailySavingsDeposit": 0,
-    "dailyCheckingDeposit": 0,
-    "dailySavingsTransfer": 0,
-    "dailyCheckingWithdraw": 0
-  },
-  {
-    "accountNumber": 934493,
-    "savingsBalance": 5110,
-    "checkingBalance": 480,
-    "dailySavingsDeposit": 100,
-    "dailyCheckingDeposit": 0,
-    "dailySavingsTransfer": 0,
-    "dailyCheckingWithdraw": 0
-  },
-  {
-    "accountNumber": 474962,
-    "savingsBalance": 0,
-    "checkingBalance": 0,
-    "dailySavingsDeposit": 0,
-    "dailyCheckingDeposit": 0,
-    "dailyCheckingWithdraw": 0,
-    "dailySavingsTransfer": 0
+    "accountNumber": 887737,
+    "savingsBalance": 1059,
+    "checkingBalance": 831,
+    "dailySavingsDeposit": 1000,
+    "dailyCheckingDeposit": 1000,
+    "dailyCheckingWithdraw": 110,
+    "dailySavingsTransfer": 10
   }
 ]

@@ -75,7 +75,7 @@ public class ATM {
 
         //loop for main ATM functionality
         while(!done){
-            System.out.print("\nChoose an option: (1: view bill history) (2: view next bill) (3: deposit) (4: withdraw) (5: transaction) (6: check Balance) (7: new dawn) (8:logout)\n> ");
+            System.out.print("\nChoose an option: (1: view bill history) (2: view next bill) (3: deposit) (4: withdraw) (5: transaction) (6: check Balance) (7: new dawn) (8:logout) (9: pay bill)\n> ");
             usrInt = getUsrInt(scanner);
             switch(usrInt) {
                 case 1:
@@ -149,6 +149,12 @@ public class ATM {
                 case 8:
                     done = true;
                     System.out.println("Good Bye Cruel World.");
+                    break;
+
+                case 9:
+                    System.out.print("Enter amount to Pay: ");
+                    usrInt = getUsrInt(scanner);
+                    utilCompany.makeBillPayment(curUsrAccntNum, usrInt);
                     break;
 
                 default:
