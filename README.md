@@ -1,3 +1,7 @@
+Authors: 
+	Kayley Clark (krclark)
+ 	Tanner Smith (trs3103) 
+  
 HOW TO DEPLOY:
 
 Unzip file, open project in IDE (IntelliJ) 
