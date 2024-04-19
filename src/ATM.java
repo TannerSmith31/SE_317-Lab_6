@@ -18,12 +18,12 @@ public class ATM {
         boolean done = false;
 
         //Ask user to either login or create account
-        System.out.println("Select an option: 1) Login with username   2) Login with accountNum    3) Create new Account");
-        usrInt = scanner.nextInt();
-        while(usrInt != 1 || usrInt != 2 || usrInt != 3){
+        System.out.print("Select an option: 1) Login with username   2) Login with accountNum    3) Create new Account \n> ");
+        usrInt = getUsrInt(scanner);
+        while(usrInt != 1 && usrInt != 2 && usrInt != 3){
             System.out.println("INVALID INPUT!");
-            System.out.println("Select an option: 1) Login with username   2) Login with accountNum    3) Create new Account");
-            usrInt = scanner.nextInt();
+            System.out.print("Select an option: 1) Login with username   2) Login with accountNum    3) Create new Account \n> ");
+            usrInt = getUsrInt(scanner);
         }
 
         //NOTE: you only get one shot to input username/accountNum and password correctly
@@ -75,8 +75,8 @@ public class ATM {
 
         //loop for main ATM functionality
         while(!done){
-            System.out.print("Choose an option: (1: view bill history) (2: view next bill) (3: deposit) (4: withdraw) (5: transaction) (6: new dawn) (7:logout)\n > ");
-            usrInt = scanner.nextInt();
+            System.out.print("\nChoose an option: (1: view bill history) (2: view next bill) (3: deposit) (4: withdraw) (5: transaction) (6: check Balance) (7: new dawn) (8:logout)\n> ");
+            usrInt = getUsrInt(scanner);
             switch(usrInt) {
                 case 1:
                     utilCompany.checkBillPaymentHistory(curUsrAccntNum);
@@ -88,9 +88,9 @@ public class ATM {
 
                 case 3:
                     System.out.print("enter an account to deposit [1=savings 2=checking]: ");
-                    accntType = scanner.nextInt();
+                    accntType = getUsrInt(scanner);
                     System.out.print("enter an ammount to deposit: ");
-                    amount = scanner.nextInt();
+                    amount = getUsrInt(scanner);
                     if(accntType == 1){
                         bank.deposit(curUsrAccntNum, bank.getSAVINGSID(), amount);
                     }else if(accntType == 2){
@@ -102,9 +102,9 @@ public class ATM {
 
                 case 4:
                     System.out.print("enter an account to withdraw [1=savings 2=checking]: ");
-                    accntType = scanner.nextInt();
+                    accntType = getUsrInt(scanner);
                     System.out.print("enter an amount to withdraw: ");
-                    amount = scanner.nextInt();
+                    amount = getUsrInt(scanner);
                     if(accntType == 1){
                         bank.withdraw(curUsrAccntNum, bank.getSAVINGSID(), amount);
                     }else if(accntType == 2){
@@ -116,9 +116,9 @@ public class ATM {
 
                 case 5:
                     System.out.print("enter an transfer type [1=savings->checking 2=checking->savings]: ");
-                    accntType = scanner.nextInt();
+                    accntType = getUsrInt(scanner);
                     System.out.print("enter an amount to transfer: ");
-                    amount = scanner.nextInt();
+                    amount = getUsrInt(scanner);
                     if(accntType == 1){
                         bank.transfer(curUsrAccntNum, bank.getSAVINGSID(), amount);
                     }else if(accntType == 2){
@@ -126,13 +126,27 @@ public class ATM {
                     }else{
                         System.out.println("ERROR: invalid input");
                     }
-
                     break;
+
                 case 6:
-                    newDawn();
+                    System.out.print("enter account to check balance [1=savings  2=checking]: ");
+                    accntType = getUsrInt(scanner);
+                    if(accntType == 1){
+                        amount = bank.getBalance(curUsrAccntNum, bank.getSAVINGSID());
+                        System.out.println("savings balance: " + amount);
+                    }else if(accntType == 2){
+                        amount = bank.getBalance(curUsrAccntNum, bank.getCHECKINGID());
+                        System.out.println("checking balance: " + amount);
+                    }else{
+                        System.out.println("ERROR: invalid input");
+                    }
                     break;
 
                 case 7:
+                    newDawn();
+                    break;
+
+                case 8:
                     done = true;
                     System.out.println("Good Bye Cruel World.");
                     break;
@@ -149,5 +163,27 @@ public class ATM {
     public static void newDawn(){
         bank.resetDailyValues(); //reset daily values for all bank accounts
         curDay+= 1; //add 1 to day count
+        System.out.println("current day: " + curDay);
+    }
+
+    /*
+     * function to take user integer input and handle exceptions
+     */
+    public static int getUsrInt(Scanner scanner){
+        int returnVal = 0;
+        String usrIn;
+        boolean inputValid = false;
+
+        while(!inputValid) {
+            usrIn = scanner.nextLine();
+
+            try {
+                returnVal = Integer.parseInt(usrIn);
+                inputValid = true;
+            } catch (Exception e) {
+                System.out.print("INVALID INPUT Try again: ");
+            }
+        }
+        return returnVal;
     }
 }
